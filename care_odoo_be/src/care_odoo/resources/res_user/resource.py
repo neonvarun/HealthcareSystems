@@ -1,0 +1,48 @@
+from care.users.models import User
+from care_odoo.connector.connector import OdooConnector
+from care_odoo.resources.res_partner.spec import PartnerData, PartnerStatus, PartnerType
+from care_odoo.resources.res_user.spec import UserData, UserType
+
+
+class OdooUserResource:
+    def get_full_name(self, user: User):
+        name = [user.prefix, user.first_name, user.last_name, user.suffix]
+        name = " ".join(filter(None, [x.strip() if x else None for x in name]))
+        return name or user.username or "-"
+
+    def sync_user_to_odoo_api(self, user) -> int | None:
+        """
+        Synchronize a user to Odoo.
+
+        Args:
+            user: User instance
+
+        Returns:
+            Odoo user ID if successful, None otherwise
+        """
+        # Create partner data first
+        partner_data = PartnerData(
+            name=self.get_full_name(user),
+            x_care_id=str(user.external_id),
+            partner_type=PartnerType.person,
+            phone=user.phone_number,
+            state="kerala",  # Default to Kerala
+            email=user.email,
+            agent=True,
+            status=PartnerStatus.retired if user.deleted else PartnerStatus.active,
+        )
+
+        # Create user data
+        data = UserData(
+            x_care_id=str(user.external_id),
+            name=self.get_full_name(user),
+            login=user.username,
+            email=user.email,
+            user_type=UserType.public,
+            phone=user.phone_number,
+            state="kerala",  # Default to Kerala
+            partner_data=partner_data,
+        ).model_dump()
+
+        response = OdooConnector.call_api("api/add/user", data)
+        return response.get("user", {}).get("id")
