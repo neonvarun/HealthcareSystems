@@ -34,3 +34,52 @@ services:
       - redis
     volumes:
       - .:/app
+
+  # ============================================================================
+  # Odoo ERP Integration (optional)
+  # ============================================================================
+  # Care syncs invoices, payments, patients, and inventory to Odoo via REST API.
+  # The odoo_connector modules (mounted below) add custom API endpoints to Odoo.
+  # Disable by commenting out this section or pointing CARE_ODOO_HOST elsewhere.
+  odoo:
+    image: odoo:19.0
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_started
+    ports:
+      - "8069:8069"
+    environment:
+      HOST: db
+      USER: ${POSTGRES_USER:-postgres}
+      PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      PORT: 5432
+    volumes:
+      - odoo-data:/var/lib/odoo
+      - ../odoo_connector:/mnt/extra-addons
+
+  # ============================================================================
+  # Metabase Analytics (optional)
+  # ============================================================================
+  # Connects to Care's PostgreSQL for BI dashboards and ad-hoc analytics.
+  # Query library available in care_analytics_sql/.
+  # Access at http://localhost:3000 after initial setup.
+  metabase:
+    image: metabase/metabase:latest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_started
+    ports:
+      - "3000:3000"
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: care
+      MB_DB_HOST: db
+      MB_DB_PORT: 5432
+      MB_DB_USER: postgres
+      MB_DB_PASS: postgres
+      MB_ENCRYPTION_SECRET_KEY: care-local-dev-secret-key-change-in-production
+
+volumes:
+  odoo-data:
