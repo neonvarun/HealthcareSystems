@@ -1,7 +1,12 @@
-from odoo import fields, models, api
+from odoo import fields, models
 
 
 class AccountPayment(models.Model):
     _inherit = 'account.payment'
 
-    is_denomination = fields.Boolean(string="Denomination Registered", default=False)
+    cash_session_id = fields.Many2one(
+        'cash.session',
+        string='Cash Session',
+        index=True,
+        help='Cash session this payment belongs to'
+    )

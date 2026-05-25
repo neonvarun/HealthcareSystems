@@ -1,10 +1,6 @@
+/// <reference types="vite/client" />
+/// <reference types="vite-plugin-pwa/client" />
 interface ImportMetaEnv {
-  readonly MODE: string;
-  readonly BASE_URL: string;
-  readonly DEV: boolean;
-  readonly PROD: boolean;
-  readonly SSR: boolean;
-
   readonly CARE_CDN_URL?: string;
 
   readonly REACT_APP_TITLE: string;
@@ -37,6 +33,7 @@ interface ImportMetaEnv {
   readonly REACT_ENABLE_MINIMAL_PATIENT_REGISTRATION?: string;
   readonly REACT_PATIENT_GLOBAL_EDIT_ACCESS_ENABLED?: string;
   readonly REACT_DISABLE_PATIENT_LOGIN?: string;
+  readonly REACT_ENABLE_QUESTIONNAIRE_DRAFT?: string;
   readonly REACT_CUSTOM_REMOTE_I18N_URL?: string;
   readonly REACT_ENABLE_AUTO_INVOICE_AFTER_DISPENSE?: string;
   readonly REACT_ENABLE_TOKEN_GENERATION_IN_PATIENT_HOME?: string;
@@ -56,38 +53,8 @@ interface ImportMetaEnv {
   readonly REACT_DEFAULT_COUNTRY?: string;
   readonly REACT_MAPS_FALLBACK_URL_TEMPLATE?: string;
   readonly REACT_CUSTOM_SHORTCUTS?: string;
-
-  readonly [key: string]: string | boolean | undefined;
 }
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
-}
-
-interface ServiceWorkerGlobalScope {
-  readonly __WB_MANIFEST: Array<{ url: string; revision?: string | null }>;
-}
-
-declare module "virtual:pwa-register" {
-  interface RegisterSWOptions {
-    immediate?: boolean;
-    onNeedRefresh?: () => void;
-    onOfflineReady?: () => void;
-    onRegistered?: (registration: ServiceWorkerRegistration | undefined) => void;
-    onRegisterError?: (error: unknown) => void;
-  }
-
-  export function registerSW(
-    options?: RegisterSWOptions,
-  ): (reloadPage?: boolean) => Promise<void>;
-}
-
-declare module "workbox-core" {
-  export function clientsClaim(): void;
-}
-
-declare module "workbox-precaching" {
-  export function precacheAndRoute(
-    entries: Array<{ url: string; revision?: string | null }>,
-  ): void;
 }

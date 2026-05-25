@@ -5,7 +5,7 @@ networks:
 
 services:
   db:
-    image: postgres:alpine
+    image: postgres:17-alpine
     restart: unless-stopped
     env_file:
       - ./docker/.prebuilt.env
@@ -48,7 +48,7 @@ services:
       - "./docker/minio/entrypoint.sh:/entrypoint.sh:ro"  # Mount the entrypoint script
     ports:
       - "9100:9000"  # S3 API
-      - "9011:9001"  # Web Console
+      - "9001:9001"  # Web Console
     entrypoint: ["/entrypoint.sh"]
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]

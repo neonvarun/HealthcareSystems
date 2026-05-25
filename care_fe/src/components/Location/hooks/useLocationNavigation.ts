@@ -53,6 +53,7 @@ export function useLocationNavigation({
           name: searchTerm,
           mode: "kind",
           parent: selectedLocation?.id,
+          ...(!selectedLocation ? { mine: true } : {}),
         },
         signal,
       })({ signal });
@@ -65,7 +66,7 @@ export function useLocationNavigation({
     queryKey: [
       "beds",
       facilityId,
-      selectedLocation?.id,
+      ...(selectedLocation ? [selectedLocation.id] : []),
       bedsPage,
       showAvailableOnly,
       searchTerm,
@@ -86,7 +87,10 @@ export function useLocationNavigation({
       })({ signal });
       return response;
     },
-    enabled: !!selectedLocation && !!facilityId && tab === "assign",
+    enabled:
+      (!!selectedLocation || searchTerm.trim() !== "") &&
+      !!facilityId &&
+      tab === "assign",
   });
 
   useEffect(() => {

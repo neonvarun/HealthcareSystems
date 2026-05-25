@@ -56,9 +56,9 @@ def calculate_amount(component, quantity, base):
     from care.utils.rounding.covert_type import convert_to_decimal
 
     if component.get("amount"):
-        return care_round(convert_to_decimal(component.get("amount")) * quantity)
+        return convert_to_decimal(component.get("amount")) * quantity
     if component.get("factor"):
-        return care_round(base * convert_to_decimal(component.get("factor")) / 100)
+        return base * convert_to_decimal(component.get("factor")) / 100
     return 0
 
 
@@ -128,18 +128,24 @@ class SupplyDeliveryOrderExtension(PlugExtension):
             pack_qty = Decimal(str(item.supplied_item_pack_quantity or 0))
             free_qty = Decimal(str(item.extensions.get("supply_delivery_extension", {}).get("free_quantity", 0)))
             unit_pack_price = Decimal(str(item.total_purchase_price or 0))
-            if not item.supplied_item.standard_pack_size:
+            if not item.supplied_item:
                 continue
-            unit_price = unit_pack_price / Decimal(str(item.supplied_item.standard_pack_size or 0))
+            standard_pack_size = (
+                item.supplied_item.standard_pack_size if item.supplied_item.standard_pack_size
+                else item.supplied_item_pack_size
+            )
+            if not standard_pack_size:
+                continue
+            unit_price = unit_pack_price / Decimal(str(standard_pack_size))
             tax = Decimal("0")
             if not item.supplied_item.charge_item_definition:
                 continue
             for component in compute_charge_item_components(item.supplied_item.charge_item_definition):
                 if component.get("monetary_component_type", "") == "tax":
                     tax += calculate_amount(component, 1 , unit_price)
-            total_tax = tax * item.supplied_item.standard_pack_size * (pack_qty - free_qty)
+            total_tax = tax * standard_pack_size * (pack_qty - free_qty)
             total_price += Decimal((pack_qty - free_qty) * unit_pack_price) + total_tax
-        data["total_price"] = str(care_round(Decimal(total_price), precision=2))
+        data["total_price"] = str(care_round(Decimal(total_price), precision=0))
         return data
 
     def deserialize_extensions_list(self, data, resource):
@@ -165,13 +171,13 @@ class PaymentReconciliationExtension(PlugExtension):
     write_schema = {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "title": "Credit Payment Details",
-        "description": "Extension for Care of Account (credit) payments. Note: Credit payments cannot be used for refunds.",
+        "description": "Extension for Care of Account (credit) payments.",
         "type": "object",
         "properties": {
             "is_credit": {
                 "type": "boolean",
                 "title": "Is this a Credit payment?",
-                "description": "Check if this payment is made by a charity, sponsor, or fund on behalf of the patient. Cannot be used for refunds.",
+                "description": "Check if this payment is made by a charity, sponsor, or fund on behalf of the patient.",
                 "default": False,
                 "x-ui": {"control": "checkbox"},
             },

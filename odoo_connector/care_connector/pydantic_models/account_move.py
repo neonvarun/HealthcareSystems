@@ -7,7 +7,7 @@ from .discounts import InvoiceDiscounts
 
 
 class InvoiceItem(BaseModel):
-    product_data:  ProductData
+    product_data: ProductData
     quantity: float = 1.0
     sale_price: float = 0.0
     x_care_id: str
@@ -17,24 +17,32 @@ class InvoiceItem(BaseModel):
 
 
 class BillType(Enum):
-    vendor = 'vendor'
-    customer = 'customer'
+    vendor = "vendor"
+    customer = "customer"
 
 
 class AccountMoveApiRequest(BaseModel):
     x_care_id: str
     invoice_number: str | None = None
+    bill_number: str | None = None
+    bill_date: str | None = None
     bill_type: BillType
     invoice_date: str
-    due_date : str
+    due_date: str
     partner_data: PartnerData
     invoice_items: List[InvoiceItem]
     reason: str | None = None
     insurance_tag: List[str] | None = None
-    payment_method_id: int | None = None
     x_identifier: str | None = None
     x_created_by: str | None = None
     payment_reference: str | None = None
+    doctor: str | None = None
+    room_number: str | None = None
+    admission_date: str | None = None
+    discharge_date: str | None = None
+    x_account: str | None = None
+    ip_bill_no: str | None = None
+    is_refund: bool = False
 
 
 class AccountMoveReturnApiRequest(BaseModel):
@@ -45,6 +53,7 @@ class AccountMoveReturnApiRequest(BaseModel):
     partner_data: PartnerData | None = None
     invoice_items: List[InvoiceItem] | None = None
     reason: str | None = None
+
 
 class AccountPaymentMethodApiRequest(BaseModel):
     search_key: str | None = None

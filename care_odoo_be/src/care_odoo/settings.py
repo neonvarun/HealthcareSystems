@@ -102,8 +102,8 @@ DEFAULTS = {
     "CARE_ODOO_PORT": "",
     "CARE_ODOO_PROTOCOL": "",
     "CARE_ODOO_DATABASE": "",
-    "CARE_ODOO_USERNAME": "admin",
-    "CARE_ODOO_PASSWORD": "admin",
+    "CARE_ODOO_USERNAME": "",
+    "CARE_ODOO_PASSWORD": "",
     "CARE_PATIENT_OFFICIAL_IDENTIFIER": "",
     # Delay in seconds before running the cleanup verification task
     # This gives the transaction time to commit or rollback before checking
