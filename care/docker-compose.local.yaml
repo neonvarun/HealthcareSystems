@@ -10,6 +10,7 @@ services:
       - ./docker/.local.env
     volumes:
       - .:/app
+      - ../care_odoo_be:/opt/care_odoo_be
     entrypoint: ["bash", "scripts/start-dev.sh"]
     ports:
       - "9000:9000"
@@ -34,6 +35,7 @@ services:
       - redis
     volumes:
       - .:/app
+      - ../care_odoo_be:/opt/care_odoo_be
 
   # ============================================================================
   # Odoo ERP Integration (optional)
@@ -51,8 +53,8 @@ services:
       - "8069:8069"
     environment:
       HOST: db
-      USER: ${POSTGRES_USER:-postgres}
-      PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      USER: odoo
+      PASSWORD: odoo
       PORT: 5432
     volumes:
       - odoo-data:/var/lib/odoo

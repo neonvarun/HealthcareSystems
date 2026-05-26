@@ -8,8 +8,8 @@ plugs = [
     # Odoo instance expected at the host/port configured below
     Plug(
         name="care_odoo",
-        package_name="care_odoo",
-        version="0.1.0",
+        package_name="care_odoo_be",
+        version="",
         configs={
             "CARE_ODOO_HOST": "odoo",
             "CARE_ODOO_PORT": "8069",
