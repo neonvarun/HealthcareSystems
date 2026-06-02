@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 from enum import Enum
 from .res_partner import PartnerData
 
@@ -14,6 +14,6 @@ class UserData(BaseModel):
     name: str
     login: str
     password: Optional[str] = None
-    email: EmailStr
+    email: str
     user_type: UserType
     partner_data: PartnerData

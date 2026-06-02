@@ -3,11 +3,10 @@ printf "celery" > /tmp/container-role
 
 set -euo pipefail
 
+pip install -e /opt/care_odoo_be
+
 ./scripts/wait_for_db.sh
 ./scripts/wait_for_redis.sh
-
-echo "installing local plugin: care_odoo_be..."
-pip install -e /opt/care_odoo_be --quiet 2>/dev/null || echo "care_odoo_be not mounted, skipping"
 
 python manage.py migrate --noinput
 python manage.py compilemessages -v 0

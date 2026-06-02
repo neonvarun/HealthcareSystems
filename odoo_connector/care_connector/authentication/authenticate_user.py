@@ -8,6 +8,15 @@ class UserAuthentication:
     @classmethod
     def get_authenticated_user(cls,auth_header):
         try:
+            # Dynamically set database registry on session for stateless REST API requests.
+            # Essential for multi-database Odoo deployments.
+            db_name = (
+                request.httprequest.headers.get("X-Odoo-Database")
+                or request.httprequest.headers.get("db")
+            )
+            if db_name and not getattr(request.session, "db", None):
+                request.session.db = db_name
+
             if not auth_header or not auth_header.startswith("Basic "):
                 raise ValueError("Missing or invalid Authorization header")
             auth_decoded = base64.b64decode(auth_header.split(" ")[1]).decode("utf-8")

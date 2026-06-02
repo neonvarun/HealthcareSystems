@@ -40,7 +40,7 @@ class OdooConnector:
         headers = {
             "Authorization": f"Basic {auth}",
             "Content-Type": "application/json",
-            "db": plugin_settings.CARE_ODOO_DATABASE,
+            "X-Odoo-Database": plugin_settings.CARE_ODOO_DATABASE,
         }
 
         # Log curl equivalent for debugging

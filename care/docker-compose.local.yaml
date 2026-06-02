@@ -8,9 +8,6 @@ services:
         ADDITIONAL_PLUGS: ${ADDITIONAL_PLUGS:-}
     env_file:
       - ./docker/.local.env
-    volumes:
-      - .:/app
-      - ../care_odoo_be:/opt/care_odoo_be
     entrypoint: ["bash", "scripts/start-dev.sh"]
     ports:
       - "9000:9000"
@@ -23,6 +20,9 @@ services:
         condition: service_started
       celery:
         condition: service_healthy
+    volumes:
+      - .:/app
+      - ../care_odoo_be:/opt/care_odoo_be
 
   celery:
     image: care_local
