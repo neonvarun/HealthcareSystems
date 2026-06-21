@@ -39,6 +39,7 @@ export interface OrganizationUpdate {
   description?: string;
   org_type?: OrgType;
   parent_id?: string;
+  parent?: string;
 }
 export interface Organization {
   id: string;
@@ -61,6 +62,7 @@ export interface OrganizationCreate {
   description?: string;
   org_type: OrgType;
   parent_id?: string;
+  parent?: string;
 }
 
 export interface OrganizationUserRole {
