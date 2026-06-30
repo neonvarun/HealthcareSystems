@@ -34,7 +34,7 @@ Create a new clinical or administrative user profile in the EMR and verify autom
 *Figure 11.1: EMR User Creation Form*
 
 ### Backend Technical Flow & Database Mapping
-* **EMR Django Model**: `User` (located in [models.py](file:///c:/Projects/HealthcareSystems/care/users/models.py))
+* **EMR Django Model**: `User` (located in [models.py](file:///c:/Projects/HealthcareSystems/care/care/users/models.py))
 * **EMR Database Table**: `users_user`
 * **Fields Written**:
   * `id`: `Integer` (Primary Key auto-incremented)
